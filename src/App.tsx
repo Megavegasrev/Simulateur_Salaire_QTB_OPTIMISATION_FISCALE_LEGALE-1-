@@ -1,5 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { loadParams, saveParams, resetParams, DEFAULT_PARAMS, type Params } from './lib/params';
+import { LogoMark } from './Logo';
+import {
+  IconSimulateur,
+  IconInverse,
+  IconComparateur,
+  IconConges,
+  IconParametres,
+} from './icons';
 import Simulateur from './screens/Simulateur';
 import CalculInverse from './screens/CalculInverse';
 import Comparateur from './screens/Comparateur';
@@ -8,20 +16,20 @@ import Parametres from './screens/Parametres';
 
 type TabId = 'sim' | 'inv' | 'cmp' | 'cong' | 'param';
 
-const TABS: { id: TabId; ico: string; label: string }[] = [
-  { id: 'sim', ico: '🧮', label: 'Simulateur' },
-  { id: 'inv', ico: '🎯', label: 'Inversé' },
-  { id: 'cmp', ico: '⚖️', label: 'Comparer' },
-  { id: 'cong', ico: '🌴', label: 'Congés' },
-  { id: 'param', ico: '⚙️', label: 'Paramètres' },
+const TABS: { id: TabId; icon: ReactNode; label: string }[] = [
+  { id: 'sim', icon: <IconSimulateur />, label: 'Simulateur' },
+  { id: 'inv', icon: <IconInverse />, label: 'Inversé' },
+  { id: 'cmp', icon: <IconComparateur />, label: 'Comparer' },
+  { id: 'cong', icon: <IconConges />, label: 'Congés' },
+  { id: 'param', icon: <IconParametres />, label: 'Paramètres' },
 ];
 
-const HEADERS: Record<TabId, { title: string; sub: string }> = {
-  sim: { title: 'Simulateur Salaire QTB', sub: '工资模拟器 · calcul direct' },
-  inv: { title: 'Calcul inversé', sub: '反向计算 · budget → net maximal' },
-  cmp: { title: 'Comparateur', sub: '薪资结构对比 · 3 structures' },
-  cong: { title: 'Cumul des congés', sub: '带薪假累计 · valorisation' },
-  param: { title: 'Paramètres', sub: '法定参数 · taux légaux & fiscaux' },
+const HEADERS: Record<TabId, string> = {
+  sim: 'Simulateur · calcul direct',
+  inv: 'Calcul inversé · budget → net',
+  cmp: 'Comparateur · 3 structures',
+  cong: 'Cumul des congés payés',
+  param: 'Paramètres légaux & fiscaux',
 };
 
 export default function App() {
@@ -37,13 +45,18 @@ export default function App() {
     setParamsState({ ...DEFAULT_PARAMS });
   };
 
-  const h = HEADERS[tab];
-
   return (
     <div className="app">
       <header className="app-header">
-        <h1>{h.title}</h1>
-        <div className="sub">{h.sub}</div>
+        <div className="brand">
+          <LogoMark size={44} />
+        </div>
+        <div className="htxt">
+          <h1>
+            Qing Tian <span className="light">Bois</span>
+          </h1>
+          <div className="sub">{HEADERS[tab]}</div>
+        </div>
       </header>
 
       {tab === 'sim' && <Simulateur params={params} />}
@@ -55,7 +68,7 @@ export default function App() {
       <nav className="tabbar">
         {TABS.map((t) => (
           <button key={t.id} className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>
-            <span className="ico">{t.ico}</span>
+            {t.icon}
             {t.label}
           </button>
         ))}
